@@ -6,6 +6,7 @@ import React from "react";
 import { Category, ExpenseFormData } from "../types";
 import { TextField, SelectBox, Button } from "../vibes";
 import { useExpenseForm } from "../hooks/useExpenseForm";
+import { formatDate } from "../utils/expenseUtils";
 
 interface ExpenseFormProps {
   initialData?: Partial<ExpenseFormData>;
@@ -41,12 +42,12 @@ export function ExpenseForm({
   };
 
   const categoryOptions = categories ? categories.map((category) => ({
-    value: category.id,
+    value: String(category.id),
     label: category.name,
   })) : [];
 
   return (
-    <form onSubmit={handleSubmit} style={formStyle}>
+    <form onSubmit={handleSubmit} style={formStyle} noValidate>
       <TextField
         label="Amount"
         type="number"
@@ -85,6 +86,7 @@ export function ExpenseForm({
       <TextField
         label="Date"
         type="date"
+        max={formatDate(new Date())} // This prevent selection of future dates
         value={formData.date}
         onChange={(e) => handleChange("date", e.target.value)}
         error={errors.date}

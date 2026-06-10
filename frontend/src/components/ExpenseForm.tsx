@@ -3,8 +3,7 @@
  */
 
 import React from "react";
-import { ExpenseFormData } from "../types";
-import { EXPENSE_CATEGORIES } from "../constants/categories";
+import { Category, ExpenseFormData } from "../types";
 import { TextField, SelectBox, Button } from "../vibes";
 import { useExpenseForm } from "../hooks/useExpenseForm";
 
@@ -13,9 +12,11 @@ interface ExpenseFormProps {
   onSubmit: (data: ExpenseFormData) => Promise<void>;
   onCancel?: () => void;
   submitLabel?: string;
+  categories?: Category[]
 }
 
 export function ExpenseForm({
+  categories,
   initialData,
   onSubmit,
   onCancel,
@@ -39,10 +40,10 @@ export function ExpenseForm({
     marginTop: "0.5rem",
   };
 
-  const categoryOptions = EXPENSE_CATEGORIES.map((category) => ({
-    value: category,
-    label: category,
-  }));
+  const categoryOptions = categories ? categories.map((category) => ({
+    value: category.id,
+    label: category.name,
+  })) : [];
 
   return (
     <form onSubmit={handleSubmit} style={formStyle}>
@@ -69,15 +70,17 @@ export function ExpenseForm({
         required
       />
 
-      <SelectBox
-        label="Category"
-        options={categoryOptions}
-        value={formData.category}
-        onChange={(e) => handleChange("category", e.target.value)}
-        error={errors.category}
-        fullWidth
-        required
-      />
+      {categories &&
+        < SelectBox
+          label="Category"
+          options={categoryOptions}
+          value={formData.category_id}
+          onChange={(e) => handleChange("category_id", e.target.value)}
+          error={errors.category_id}
+          fullWidth
+          required
+        />
+      }
 
       <TextField
         label="Date"
